@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings | SalesFlow</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .settings-container {
+            max-width: 800px;
+        }
+
+        .settings-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .settings-header {
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .setting-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .setting-item:last-child {
+            border-bottom: none;
+        }
+
+        .setting-info h4 {
+            margin-bottom: 0.25rem;
+        }
+
+        .setting-info p {
+            color: var(--text-muted);
+            font-size: 0.875rem;
+        }
+
+        /* Toggle Switch */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 26px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: var(--border-color);
+            transition: .4s;
+            border-radius: 34px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 20px;
+            width: 20px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked+.slider {
+            background-color: var(--primary-color);
+        }
+
+        input:checked+.slider:before {
+            transform: translateX(24px);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="app-container">
+        <aside class="sidebar">
+            <div class="logo">
+                <i class="ri-bar-chart-grouped-fill"></i>
+                <h2>SalesFlow</h2>
+            </div>
+            <nav>
+                <a href="index.html"><i class="ri-dashboard-line"></i> Dashboard</a>
+                <a href="inventory.html"><i class="ri-shopping-bag-3-line"></i> Inventory</a>
+                <a href="customers.html"><i class="ri-user-3-line"></i> Customers</a>
+                <a href="settings.html" class="active"><i class="ri-settings-4-line"></i> Settings</a>
+            </nav>
+            <div class="user-profile">
+                <div class="avatar"><img src="https://ui-avatars.com/api/?name=Admin+User&background=6366f1&color=fff"
+                        alt="User"></div>
+                <div class="user-info">
+                    <h4>Admin User</h4>
+                    <p>Manager</p>
+                </div>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <header class="top-bar">
+                <h1 style="font-size: 1.5rem;">Settings</h1>
+            </header>
+
+            <div class="settings-container">
+                <div class="settings-card">
+                    <div class="settings-header">
+                        <h3>App Preferences</h3>
+                    </div>
+
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <h4>Dark Mode</h4>
+                            <p>Switch between dark and light themes.</p>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" id="themeToggle" checked>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <h4>Notifications</h4>
+                            <p>Enable desktop alerts for sales.</p>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" checked>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="settings-card" style="border-color: rgba(239, 68, 68, 0.3);">
+                    <div class="settings-header">
+                        <h3 style="color: var(--danger-color);">Danger Zone</h3>
+                    </div>
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <h4>Reset All Data</h4>
+                            <p>Clear all local storage data. This cannot be undone.</p>
+                        </div>
+                        <button class="btn-primary" style="background-color: var(--danger-color);"
+                            onclick="clearAllData()">Reset & Reload</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Toggle Theme Logic (Simple Implementation)
+        const toggle = document.getElementById('themeToggle');
+
+        // Check saved preference
+        if (localStorage.getItem('theme') === 'light') {
+            document.body.style.filter = 'invert(1) hue-rotate(180deg)';
+            toggle.checked = false;
+        }
+
+        toggle.addEventListener('change', (e) => {
+            if (e.target.checked) {
+                // Dark
+                document.body.style.filter = 'none';
+                localStorage.setItem('theme', 'dark');
+            } else {
+                // Light (Cheap trick for instant light mode without duplicated CSS)
+                document.body.style.filter = 'invert(1) hue-rotate(180deg)';
+                localStorage.setItem('theme', 'light');
+            }
+        });
+
+        // Danger Zone
+        function clearAllData() {
+            if (confirm('WARNING: All data (Sales, Inventory, Customers) will be wiped. Continue?')) {
+                localStorage.clear();
+                window.location.href = 'index.html';
+            }
+        }
+    </script>
+</body>
+
+</html>

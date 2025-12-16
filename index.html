@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SalesFlow | Premium Sales Management</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Remix Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="app-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="logo">
+                <i class="ri-bar-chart-grouped-fill"></i>
+                <h2>SalesFlow</h2>
+            </div>
+
+            <nav>
+                <a href="index.html" class="active"><i class="ri-dashboard-line"></i> Dashboard</a>
+                <a href="inventory.html"><i class="ri-shopping-bag-3-line"></i> Inventory</a>
+                <a href="customers.html"><i class="ri-user-3-line"></i> Customers</a>
+                <a href="settings.html"><i class="ri-settings-4-line"></i> Settings</a>
+            </nav>
+
+            <div class="user-profile">
+                <div class="avatar">
+                    <img src="https://ui-avatars.com/api/?name=Admin+User&background=6366f1&color=fff" alt="User">
+                </div>
+                <div class="user-info">
+                    <h4>Admin User</h4>
+                    <p>Manager</p>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="top-bar">
+                <div class="search-bar">
+                    <i class="ri-search-line"></i>
+                    <input type="text" id="searchInput" placeholder="Search sales items...">
+                </div>
+                <div class="actions">
+                    <button class="icon-btn"><i class="ri-notification-3-line"></i></button>
+                    <button class="btn-primary" id="openModalBtn">
+                        <i class="ri-add-line"></i> New Sale
+                    </button>
+                </div>
+            </header>
+
+            <!-- Dashboard Stats -->
+            <section class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon sales">
+                        <i class="ri-money-dollar-circle-line"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>Total Revenue</h3>
+                        <p id="totalRevenue">$0.00</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon items">
+                        <i class="ri-shopping-cart-2-line"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>Items Sold</h3>
+                        <p id="totalItems">0</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon average">
+                        <i class="ri-funds-line"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>Avg. Sale</h3>
+                        <p id="avgSale">$0.00</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Sales Table -->
+            <section class="content-card">
+                <div class="card-header">
+                    <h3>Recent Transactions</h3>
+                    <div class="card-actions">
+                        <button class="icon-btn-sm" id="refreshBtn"><i class="ri-refresh-line"></i></button>
+                    </div>
+                </div>
+                <div class="table-responsive">
+                    <table class="sales-table">
+                        <thead>
+                            <tr>
+                                <th>Item Name</th>
+                                <th>Category</th>
+                                <th>Date</th>
+                                <th>Price</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="salesById">
+                            <!-- Items will be injected here -->
+                        </tbody>
+                    </table>
+                    <div id="emptyState" class="empty-state hidden">
+                        <img src="https://cdni.iconscout.com/illustration/premium/thumb/empty-state-2130362-1800926.png"
+                            alt="No Data">
+                        <p>No sales records found</p>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Add/Edit Item Modal -->
+    <div class="modal-overlay" id="itemModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">Add New Sale</h2>
+                <button class="close-modal" id="closeModalBtn"><i class="ri-close-line"></i></button>
+            </div>
+            <form id="saleForm">
+                <input type="hidden" id="itemId">
+
+                <div class="form-group">
+                    <label for="itemName">Item Name</label>
+                    <input type="text" id="itemName" required placeholder="e.g. Wireless Mouse">
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="itemCategory">Category</label>
+                        <select id="itemCategory" required>
+                            <option value="Electronics">Electronics</option>
+                            <option value="Clothing">Clothing</option>
+                            <option value="Home & Garden">Home & Garden</option>
+                            <option value="Services">Services</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="itemPrice">Price ($)</label>
+                        <input type="number" id="itemPrice" min="0" step="0.01" required placeholder="0.00">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="itemStatus">Status</label>
+                    <div class="radio-group">
+                        <label class="radio-label">
+                            <input type="radio" name="status" value="Completed" checked>
+                            <span class="custom-radio"></span> Completed
+                        </label>
+                        <label class="radio-label">
+                            <input type="radio" name="status" value="Pending">
+                            <span class="custom-radio"></span> Pending
+                        </label>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn-text" id="cancelBtn">Cancel</button>
+                    <button type="submit" class="btn-primary">Save Record</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>

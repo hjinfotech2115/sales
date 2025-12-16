@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inventory | SalesFlow</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="app-container">
+        <!-- Sidebar (Shared navigation logic ideally, but duplicated for static simplicity) -->
+        <aside class="sidebar">
+            <div class="logo">
+                <i class="ri-bar-chart-grouped-fill"></i>
+                <h2>SalesFlow</h2>
+            </div>
+
+            <nav>
+                <a href="index.html"><i class="ri-dashboard-line"></i> Dashboard</a>
+                <a href="inventory.html" class="active"><i class="ri-shopping-bag-3-line"></i> Inventory</a>
+                <a href="customers.html"><i class="ri-user-3-line"></i> Customers</a>
+                <a href="settings.html"><i class="ri-settings-4-line"></i> Settings</a>
+            </nav>
+
+            <div class="user-profile">
+                <div class="avatar">
+                    <img src="https://ui-avatars.com/api/?name=Admin+User&background=6366f1&color=fff" alt="User">
+                </div>
+                <div class="user-info">
+                    <h4>Admin User</h4>
+                    <p>Manager</p>
+                </div>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <header class="top-bar">
+                <div class="search-bar">
+                    <i class="ri-search-line"></i>
+                    <input type="text" id="searchInput" placeholder="Search inventory by name or SKU...">
+                </div>
+                <div class="actions">
+                    <button class="icon-btn" id="exportBtn" title="Export CSV"><i
+                            class="ri-download-cloud-2-line"></i></button>
+                    <button class="btn-primary" id="openModalBtn">
+                        <i class="ri-add-line"></i> Add Item
+                    </button>
+                </div>
+            </header>
+
+            <!-- KPI Cards -->
+            <section class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon items">
+                        <i class="ri-archive-line"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>Total Products</h3>
+                        <p id="totalProducts">0</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon average">
+                        <i class="ri-alert-line"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>Low Stock</h3>
+                        <p id="lowStockCount">0</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon sales">
+                        <i class="ri-money-dollar-box-line"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>Inventory Value</h3>
+                        <p id="inventoryValue">$0.00</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="content-card">
+                <div class="card-header">
+                    <h3>Current Stock</h3>
+                    <div class="card-actions">
+                        <button class="icon-btn-sm" id="refreshBtn"><i class="ri-refresh-line"></i></button>
+                    </div>
+                </div>
+                <div class="table-responsive">
+                    <table class="sales-table">
+                        <thead>
+                            <tr>
+                                <th>Item Name</th>
+                                <th>SKU</th>
+                                <th>Category</th>
+                                <th>Stock</th>
+                                <th>Price</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="inventoryTableBody">
+                            <!-- Items Injected Here -->
+                        </tbody>
+                    </table>
+                    <div id="emptyState" class="empty-state hidden">
+                        <img src="https://cdni.iconscout.com/illustration/premium/thumb/empty-box-4903330-4102927.png"
+                            alt="Empty">
+                        <p>No inventory items found</p>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Inventory Modal -->
+    <div class="modal-overlay" id="inventoryModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">Add Product</h2>
+                <button class="close-modal" id="closeModalBtn"><i class="ri-close-line"></i></button>
+            </div>
+            <form id="inventoryForm">
+                <input type="hidden" id="itemId">
+
+                <div class="form-group">
+                    <label for="itemName">Product Name</label>
+                    <input type="text" id="itemName" required placeholder="e.g. Ergonomic Chair">
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="itemSku">SKU</label>
+                        <input type="text" id="itemSku" required placeholder="e.g. FUR-001">
+                    </div>
+                    <div class="form-group">
+                        <label for="itemCategory">Category</label>
+                        <select id="itemCategory" required>
+                            <option value="Electronics">Electronics</option>
+                            <option value="Furniture">Furniture</option>
+                            <option value="Accessories">Accessories</option>
+                            <option value="Office">Office Supplies</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="itemStock">Stock Quantity</label>
+                        <input type="number" id="itemStock" min="0" required placeholder="0">
+                    </div>
+                    <div class="form-group">
+                        <label for="itemPrice">Unit Price ($)</label>
+                        <input type="number" id="itemPrice" min="0" step="0.01" required placeholder="0.00">
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn-text" id="cancelBtn">Cancel</button>
+                    <button type="submit" class="btn-primary">Save Product</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="inventory.js"></script>
+</body>
+
+</html>
